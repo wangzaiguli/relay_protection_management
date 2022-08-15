@@ -1,0 +1,43 @@
+server:
+  port: 8886
+
+spring:
+  datasource:
+    username: root
+    password: 123456
+    url: jdbc:mysql://localhost:3306/relay_protection?useUnicode=true&characterEncoding=utf-8&useSSL=false&serverTimezone=UTC
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+    auto-mapping-behavior: full
+  mapper-locations: classpath*:mapper/*Mapper.xml
+  type-aliases-package: com.relay.protection.pojo.bo
+  global-config:
+    # 逻辑删除配置
+    db-config:
+      # 删除前
+      logic-not-delete-value: 1
+      # 删除后
+      logic-delete-value: 0
+
+mydata:
+
+  #  apply：申请, calc：计算, check：复核, verify：审核, approval：批准, execute：执行
+  flow: 'apply,calc,check,verify,approval,execute'
+  noFlow: ''
+
+  #  management:管理系统， calculation：计算系统， set：设置， personnel：人事管理
+  model: 'management,set,personnel,calculation'
+  noModel: ''
+
+  #  存储文件的路径
+  file: mydata/file/
+
+logging:
+  path: mydata/log/
+  level:
+    com:
+      relay:
+        protection:
+          mapper: debug

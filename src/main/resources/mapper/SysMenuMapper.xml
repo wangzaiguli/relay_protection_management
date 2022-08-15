@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relay.protection.mapper.SysMenuMapper">
+
+
+    <select id="getRoleMenuList" resultType="com.relay.protection.pojo.dto.UserAuth">
+        SELECT
+            M.NAME, M.CODE, M.PERMS
+        FROM
+            SYS_ROLE_METHOD RM
+        LEFT JOIN SYS_METHOD M ON M.ID = RM.METHOD_ID
+        WHERE
+            RM.ROLE_ID = #{id}
+    </select>
+
+
+    <select id="getUserMenuList" resultType="com.relay.protection.pojo.dto.UserAuth">
+        SELECT
+            M.NAME, M.CODE, M.PERMS, RM.ROLE_ID AS roleId
+        FROM
+            SYS_USER_ROLE UR
+        LEFT JOIN SYS_ROLE_METHOD RM ON RM.ROLE_ID = UR.ROLE_ID
+        LEFT JOIN SYS_METHOD M ON M.ID = RM.METHOD_ID
+        WHERE
+            UR.USER_ID = #{id}
+    </select>
+
+
+    <select id="getUserMenuAllList" resultType="com.relay.protection.pojo.dto.UserAuth">
+        SELECT
+            M.NAME, M.CODE, M.PERMS, RM.ROLE_ID AS roleId
+        FROM
+            SYS_ROLE_METHOD RM
+        LEFT JOIN SYS_METHOD M ON M.ID = RM.METHOD_ID
+    </select>
+
+
+</mapper>

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+        PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+        "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<generatorConfiguration>
+    <!--    注释掉-->
+    <classPathEntry location="C:\maven\repository\mysql\mysql-connector-java\8.0.28\mysql-connector-java-8.0.28.jar"/>
+
+    <context id="DB2Tables" targetRuntime="MyBatis3">
+
+        <!--<plugin type="com.relay.protection.config.MyToStringPlugin"/>-->
+
+        <commentGenerator>
+            <property name="suppressDate" value="true"/>
+            <!-- 是否去除自动生成的注释 true：是 ： false:否 -->
+            <property name="suppressAllComments" value="true"/>
+        </commentGenerator>
+        <!-- 自定义注释 -->
+        <!--<commentGenerator type="com.relay.protection.config.MyCommentGenerator">-->
+            <!--&lt;!&ndash; 是否去除自动生成的注释 true：是 ： false:否 &ndash;&gt;-->
+            <!--<property name="suppressAllComments" value="false"/>-->
+            <!--&lt;!&ndash; 是否生成注释代时间戳&ndash;&gt;-->
+            <!--<property name="suppressDate" value="true"/>-->
+            <!--<property name="addRemarkComments" value="true"/>-->
+        <!--</commentGenerator>-->
+
+        <!--数据库连接参数 -->
+        <jdbcConnection
+                driverClass="com.mysql.cj.jdbc.Driver"
+                connectionURL="jdbc:mysql://localhost:3306/relay_protection?useUnicode=true"
+                userId="root"
+                password="123456">
+        </jdbcConnection>
+
+        <!--<javaTypeResolver>-->
+        <!--<property name="forceBigDecimals" value="false"/>-->
+        <!--</javaTypeResolver>-->
+        <!-- 类型转换 -->
+        <javaTypeResolver type="org.mybatis.generator.internal.types.JavaTypeResolverDefaultImpl">
+            <!-- 是否使用bigDecimal
+            默认false：把JDBC DECIMAL 和 NUMERIC 类型解析为 Integer，
+            为 true时：把JDBC DECIMAL 和NUMERIC 类型解析为java.math.BigDecimal
+            -->
+            <property name="forceBigDecimals" value="false"/>
+        </javaTypeResolver>
+
+
+
+        <!-- 实体类的包名和存放路径 -->
+        <javaModelGenerator targetPackage="com.relay.protection.pojo.bo" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+            <property name="trimStrings" value="true"/>
+        </javaModelGenerator>
+
+        <!-- 生成映射文件*.xml的位置-->
+        <sqlMapGenerator targetPackage="mapper" targetProject="src/main/resources">
+            <property name="enableSubPackages" value="true"/>
+        </sqlMapGenerator>
+
+        <!-- 生成DAO的包名和位置 -->
+        <javaClientGenerator type="XMLMAPPER" targetPackage="com.relay.protection.mapper" targetProject="src/main/java">
+            <property name="enableSubPackages" value="true"/>
+        </javaClientGenerator>
+
+
+        <!--<table tableName="sys_dept" domainObjectName="SysDept"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+
+
+        <!--<table tableName="biz_order" domainObjectName="BizOrder"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+
+        <!--<table tableName="biz_order_flow" domainObjectName="BizOrderFolw"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+
+        <!--<table tableName="biz_order_file" domainObjectName="BizOrderFile"-->
+               <!--enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"-->
+               <!--enableSelectByExample="false" selectByExampleQueryId="false"/>-->
+
+        <table tableName="biz_order_template" domainObjectName="BizOrderTemplate"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+        <table tableName="biz_order_cacl" domainObjectName="BizOrderCacl"
+               enableCountByExample="false" enableUpdateByExample="false" enableDeleteByExample="false"
+               enableSelectByExample="false" selectByExampleQueryId="false"/>
+
+
+    </context>
+
+</generatorConfiguration>

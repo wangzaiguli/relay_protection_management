@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relay.protection.mapper.BizOrderMapper">
+
+    <resultMap id="BaseResultMap" type="com.relay.protection.pojo.bo.BizOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="status" jdbcType="CHAR" property="status"/>
+        <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <resultMap id="OrderValue" type="com.relay.protection.pojo.bo.BizOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <collection property="flowList" ofType="com.relay.protection.pojo.bo.BizOrderFlow">
+            <result property="id" column="FLOW_ID"/>
+            <result property="status" column="STATUS"/>
+            <result property="userName" column="USER_NAME"/>
+            <result property="updateTime" column="UPDATE_TIME"/>
+            <result property="remark" column="REJECT"/>
+            <collection property="fileList" ofType="com.relay.protection.pojo.bo.BizFile">
+                <result property="id" column="FILE_ID"/>
+                <result property="name" column="FILE_NAME"/>
+            </collection>
+        </collection>
+    </resultMap>
+
+    <resultMap id="OrderList" type="com.relay.protection.pojo.bo.BizOrder">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="code" jdbcType="VARCHAR" property="code"/>
+        <result column="status" jdbcType="CHAR" property="status"/>
+        <result column="user_name" jdbcType="VARCHAR" property="userName"/>
+        <result column="create_user" jdbcType="BIGINT" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="BIGINT" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id, name, code, status, create_user, create_time, update_user, update_time, remark
+    </sql>
+
+    <sql id="select_value">
+        SELECT
+        O.ID, O.NAME, O.CODE, O.REMARK,
+        W.ID AS FLOW_ID, W.STATUS, W.UPDATE_TIME, W.REMARK AS REJECT,
+        E.ID AS FILE_ID, E.NAME AS FILE_NAME,
+        U.USER_NAME
+        FROM BIZ_ORDER O
+        LEFT JOIN BIZ_ORDER_FLOW W ON O.ID = W.PARENT_ID
+        LEFT JOIN BIZ_FILE E ON W.ID = E.FLOW_ID
+        LEFT JOIN SYS_USER U ON U.ID = W.CREATE_USER
+    </sql>
+
+    <sql id="select_list">
+        SELECT
+        O.ID, O.NAME, O.CODE, O.STATUS, O.UPDATE_TIME, U.USER_NAME, O.REMARK
+        FROM BIZ_ORDER O
+        LEFT JOIN SYS_USER U ON U.ID = O.UPDATE_USER
+    </sql>
+
+    <select id="queryInfo" resultMap="OrderValue">
+        <include refid="select_value"/>
+        WHERE
+        O.ID = #{id}
+        ORDER BY W.UPDATE_TIME DESC
+    </select>
+
+    <select id="applyQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE
+        O.UPDATE_USER = #{dto.userId}
+        AND (O.status = #{dto.save} OR O.STATUS = #{dto.calc} OR O.STATUS = #{dto.calcReject})
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="calcQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE
+        O.STATUS = #{dto.calc}
+        OR ((O.STATUS = #{dto.reject} OR O.STATUS = #{dto.debugFail}) AND O.CREATE_USER = #{dto.userId})
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="checkQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE
+        O.STATUS = #{dto.check}
+        OR (O.STATUS = #{dto.debugSuc} AND O.CREATE_USER = #{dto.userId})
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="verifyQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE O.STATUS = #{dto.verify}
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="approvalQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE O.STATUS = #{dto.approval}
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="executeQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        WHERE O.STATUS = #{dto.execute} OR O.STATUS = #{dto.debug}
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+    <select id="allQuery" parameterType="com.relay.protection.pojo.dto.OrderQueryDto" resultMap="OrderList">
+        <include refid="select_list"/>
+        <where>
+            <if test="dto.status!=null">
+                O.STATUS = #{dto.status}
+            </if>
+            <if test="dto.name!=null">
+                O.STATUS like concat ('%', #{dto.name},'%')
+            </if>
+            <if test="dto.code!=null">
+                O.STATUS like concat ('%', #{dto.code},'%')
+            </if>
+        </where>
+        ORDER BY O.UPDATE_TIME DESC
+    </select>
+
+</mapper>

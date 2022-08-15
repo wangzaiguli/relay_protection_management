@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.relay.protection.mapper.SysRoleMapper">
+
+  <select id="getUserRoleList" resultType="com.relay.protection.pojo.bo.SysRole">
+    SELECT
+      R.ID,
+      R.CODE,
+      R.NAME,
+      R.UPDATE_TIME,
+      R.remark,
+      R.STATUS
+    FROM
+      SYS_USER_ROLE UR
+    LEFT JOIN SYS_ROLE R ON R.ID = UR.ROLE_ID
+    WHERE
+      UR.USER_ID = #{id}
+  </select>
+
+</mapper>
